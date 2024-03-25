@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card game</title>
+    <style>
+      img {
+        width: 90px;
+        height: 130px;
+        padding: 10px;
+        transition: 1s;
+      }
+      img:hover {
+        cursor: pointer;
+        border: solid red 1px;
+      }
+      img[back="true"] {
+        /* transform: rotateY("0deg"); */
+      }
+      img[back="false"] {
+        pointer-events: none;
+        /* transform: rotateY("180deg"); */
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="showAll()">show All</button>
+    <button onclick="hideAll()">hide All</button>
+    <button onclick="shuffle()">shuffle</button><br />
+    <div id="board">
+      <!-- 52장의 카드를 보여준다. -->
+      <!-- <img src="card_img/back.jpg" alt="back" />
+      <img src="card_img/front.jpg" alt="front" /> -->
+    </div>
+    <script>
+      let cardNumbers = [];
+      let back = false;
+      let board = document.getElementById("board");
+      for (let i = 0; i < 52; i++) {
+        cardNumbers.push(i);
+        board.innerHTML +=
+          "<img onclick='matchCards(this)' back=" +
+          back +
+          " src=card_img/" +
+          i +
+          ".png alt=" +
+          i +
+          " style='transform: rotateY(0deg)'/>";
+      }
+
+      // window.onload = function () {
+      //   // 1. 요소에 대한 참조를 얻는다.
+      //   // 2. 이벤트소스에 이벤트를 등록한다.
+      // };
+
+      // 모든 카드를 보여준다.(앞면이 보이게 한다.)
+      function showAll() {
+        let cardImages = document.getElementsByTagName("img");
+        console.log(cardImages);
+        // for (let i = 0; i < cardImages.length; i++) {
+        //   console.log(i);
+        let index = 0;
+        for (cardImage of cardImages) {
+          cardImage.setAttribute(
+            "src",
+            "card_img/" + cardNumbers[index] + ".png"
+          );
+          cardImage.setAttribute("back", false);
+          cardImage.style = "transform: rotateY(0deg)";
+          cardImage.setAttribute("alt", cardNumbers[index]);
+          index++;
+        }
+        back = false;
+      }
+
+      // 모든 카드를 덮는다.(뒷면이 보이게 한다.)
+      function hideAll() {
+        let cardImages = document.getElementsByTagName("img");
+        for (cardImage of cardImages) {
+          cardImage.setAttribute("src", "card_img/back.png");
+          cardImage.style = "transform: rotateY(180deg)";
+          cardImage.setAttribute("back", true);
+        }
+        back = true;
+      }
+
+      // 카드의 순서를 뒤섞는다.
+      function shuffle() {
+        let cardImages = document.getElementsByTagName("img");
+
+        cardNumbers.sort(function (a, b) {
+          return Math.random() - 0.5;
+        });
+
+        if (!back) {
+          showAll();
+        }
+      }
+
+      let cardsClicked = [];
+      function matchCards(card) {
+        // 클릭된 카드가 2장인 경우 return false
+        if (cardsClicked.length === 2) return false;
+
+        showCard(card);
+        cardsClicked.push(card);
+        console.log(cardsClicked);
+        // cardsClicked.distinct();
+
+        if (cardsClicked.length === 2) {
+          if (Math.abs(cardsClicked[0].alt - cardsClicked[1].alt) === 26) {
+            // 카드가 짝이 맞을 경우
+            setTimeout(removeCards, 1000);
+          } else {
+            // 카드가 짝이 맞지 않을 경우
+            setTimeout(hideClickedCards, 1000);
+          }
+        }
+      }
+
+      // 카드를 보여준다
+      function showCard(card) {
+        console.dir(card);
+        card.setAttribute("back", false);
+        // card.back = false;
+        card.style = "transform: rotateY(0deg);";
+        // console.dir(card);
+        card.setAttribute("src", "card_img/" + card.alt + ".png");
+      }
+
+      // 카드를 덱에서 제거
+      function removeCards() {
+        alert("정답");
+        for (card of cardsClicked) {
+          card.remove();
+          // console.log(cardNumbers);
+          // cards.remove(parseInt(card.alt));
+          // console.log(cardNumbers.indexOf(parseInt(card.alt)));
+          cardNumbers.splice(cardNumbers.indexOf(parseInt(card.alt)), 1);
+        }
+        console.log(cardNumbers);
+        cardsClicked = [];
+      }
+
+      // 카드를 숨김
+      function hideClickedCards() {
+        alert("다릅니다");
+        for (card of cardsClicked) {
+          card.setAttribute("back", true);
+          card.style = "transform: rotateY(180deg);";
+          card.setAttribute("src", "card_img/back.png");
+        }
+        cardsClicked = [];
+      }
+    </script>
+  </body>
+</html>
