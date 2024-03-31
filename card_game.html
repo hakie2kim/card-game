@@ -37,6 +37,7 @@
       let cardNumbers = [];
       let back = false;
       let board = document.getElementById("board");
+
       for (let i = 0; i < 52; i++) {
         cardNumbers.push(i);
         board.innerHTML +=
@@ -48,11 +49,6 @@
           i +
           " style='transform: rotateY(0deg)'/>";
       }
-
-      // window.onload = function () {
-      //   // 1. 요소에 대한 참조를 얻는다.
-      //   // 2. 이벤트소스에 이벤트를 등록한다.
-      // };
 
       // 모든 카드를 보여준다.(앞면이 보이게 한다.)
       function showAll() {
@@ -100,13 +96,11 @@
 
       let cardsClicked = [];
       function matchCards(card) {
-        // 클릭된 카드가 2장인 경우 return false
+        // 클릭된 카드가 2장인 경우 -> 더이상 클릭하지 못하게 함
         if (cardsClicked.length === 2) return false;
 
         showCard(card);
         cardsClicked.push(card);
-        console.log(cardsClicked);
-        // cardsClicked.distinct();
 
         if (cardsClicked.length === 2) {
           if (Math.abs(cardsClicked[0].alt - cardsClicked[1].alt) === 26) {
@@ -121,36 +115,33 @@
 
       // 카드를 보여준다
       function showCard(card) {
-        console.dir(card);
         card.setAttribute("back", false);
-        // card.back = false;
         card.style = "transform: rotateY(0deg);";
-        // console.dir(card);
         card.setAttribute("src", "card_img/" + card.alt + ".png");
       }
 
-      // 카드를 덱에서 제거
+      // 짝을 맞춘 카드를 덱에서 제거
       function removeCards() {
         alert("정답");
+
         for (card of cardsClicked) {
-          card.remove();
-          // console.log(cardNumbers);
-          // cards.remove(parseInt(card.alt));
-          // console.log(cardNumbers.indexOf(parseInt(card.alt)));
-          cardNumbers.splice(cardNumbers.indexOf(parseInt(card.alt)), 1);
+          card.remove(); // hideAll일 때 제거
+          cardNumbers.splice(cardNumbers.indexOf(parseInt(card.alt)), 1); // showAll일 때 제거
         }
-        console.log(cardNumbers);
+
         cardsClicked = [];
       }
 
-      // 카드를 숨김
+      // 짝을 맞추지 못한 카드를 숨김
       function hideClickedCards() {
         alert("다릅니다");
+
         for (card of cardsClicked) {
           card.setAttribute("back", true);
           card.style = "transform: rotateY(180deg);";
           card.setAttribute("src", "card_img/back.png");
         }
+
         cardsClicked = [];
       }
     </script>
